@@ -1,5 +1,7 @@
 # Library Application (CS4398/5394) 
 
+Auth
+
 ## Pre-requisites and Dependencies
 
 Apache Maven: https://maven.apache.org/     
