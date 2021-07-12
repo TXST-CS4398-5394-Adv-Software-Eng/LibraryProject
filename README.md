@@ -1,7 +1,6 @@
 # Library Application (CS4398/5394) 
 
-Test
-One
+Authors: Borislav Sabotinov
 
 ## Pre-requisites and Dependencies
 
