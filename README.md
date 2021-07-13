@@ -1,6 +1,6 @@
 # Library Application (CS4398/5394) 
 
-Authors: Borislav Sabotinov
+Authors: Borislav Sabotinov, Carlos Jobe
 
 ## Pre-requisites and Dependencies
 
