@@ -16,6 +16,7 @@
 
 package edu.txstate.library;
 
+import edu.txstate.library.model.Library;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -28,9 +29,11 @@ public class LibraryApplication {
     /**
      * Launches SpringBoot application, which listens on port 8080
      * {@code localhost:8080}
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(LibraryApplication.class, args);
+
+        Library library = new Library();
     }
 }

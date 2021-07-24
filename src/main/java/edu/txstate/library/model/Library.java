@@ -1,5 +1,7 @@
 package edu.txstate.library.model;
 
+import edu.txstate.library.util.GenerateData;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -8,6 +10,16 @@ public class Library {
     private ArrayList<User> listOfUsers;
     private ArrayList<Item> inventory;
     private HashMap<UUID, ArrayList<Item>> itemRequests;
+
+    public Library() {
+        listOfUsers = new ArrayList<>();
+        inventory = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            listOfUsers.add(GenerateData.generateUser());
+            inventory.add(GenerateData.generateBook());
+        }
+    }
 
     public ArrayList<User> getListOfUsers() {
         return listOfUsers;
