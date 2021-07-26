@@ -9,4 +9,9 @@ public class ViewsController {
     public String indexPage() {
         return "index";
     }
+
+    @RequestMapping(value={"/user"})
+    public String userPage() {
+        return "user";
+    }
 }

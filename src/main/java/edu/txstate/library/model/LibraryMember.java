@@ -1,7 +1,7 @@
 package edu.txstate.library.model;
 
 public interface LibraryMember {
-    boolean checkoutItem(Item i);
+    boolean checkoutItem(String uuid);
     void returnItem(Item i);
     void requestItem(Item i);
     boolean renewItem(Item i);

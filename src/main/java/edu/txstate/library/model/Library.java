@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Library {
-    private ArrayList<User> listOfUsers;
-    private ArrayList<Item> inventory;
-    private HashMap<UUID, ArrayList<Item>> itemRequests;
+    private static ArrayList<User> listOfUsers;
+    private static ArrayList<Item> inventory;
+    private static HashMap<UUID, ArrayList<Item>> itemRequests;
 
-    public Library() {
+    static {
         listOfUsers = new ArrayList<>();
         inventory = new ArrayList<>();
 
@@ -21,28 +21,32 @@ public class Library {
         }
     }
 
-    public ArrayList<User> getListOfUsers() {
+    private Library() {
+        // prevent creation of instances
+    }
+
+    public static ArrayList<User> getListOfUsers() {
         return listOfUsers;
     }
 
-    public void setListOfUsers(ArrayList<User> listOfUsers) {
-        this.listOfUsers = listOfUsers;
+    public static void setListOfUsers(ArrayList<User> usersList) {
+        listOfUsers = usersList;
     }
 
-    public ArrayList<Item> getInventory() {
+    public static ArrayList<Item> getInventory() {
         return inventory;
     }
 
-    public void setInventory(ArrayList<Item> inventory) {
-        this.inventory = inventory;
+    public static void setInventory(ArrayList<Item> libraryItems) {
+        inventory = libraryItems;
     }
 
-    public HashMap<UUID, ArrayList<Item>> getItemRequests() {
+    public static HashMap<UUID, ArrayList<Item>> getItemRequests() {
         return itemRequests;
     }
 
-    public void setItemRequests(HashMap<UUID, ArrayList<Item>> itemRequests) {
-        this.itemRequests = itemRequests;
+    public static void setItemRequests(HashMap<UUID, ArrayList<Item>> itemsRequested) {
+        itemRequests = itemsRequested;
     }
 
     /**

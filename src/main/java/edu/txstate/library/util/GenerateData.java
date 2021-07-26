@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import edu.txstate.library.model.Book;
 import edu.txstate.library.model.User;
 
+import java.util.Random;
+
 /**
  *
  */
@@ -29,6 +31,8 @@ public class GenerateData {
      * @return a Book object
      */
     public static Book generateBook() {
-        return new Book(faker.book().author(), faker.book().title(), faker.book().publisher(), faker.book().genre());
+        Random random = new Random();
+        return new Book(faker.book().author(), faker.book().title(), faker.book().publisher(),
+                faker.book().genre(), random.nextBoolean());
     }
 }

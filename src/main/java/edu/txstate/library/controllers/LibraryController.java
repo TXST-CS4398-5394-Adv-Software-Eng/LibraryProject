@@ -16,10 +16,15 @@
 
 package edu.txstate.library.controllers;
 
+import com.google.gson.Gson;
+import edu.txstate.library.model.Item;
+import edu.txstate.library.model.Library;
+import edu.txstate.library.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 @RestController
@@ -31,5 +36,19 @@ public class LibraryController {
     @GetMapping("/hello")
     String hello() {
         return "CS4398/5394 Library App says hello!" + message + "!";
+    }
+
+    @GetMapping("getUserData")
+    String getUserData() {
+        logger.info("Getting user data.....");
+        ArrayList<User> users = Library.getListOfUsers();
+        return new Gson().toJson(users);
+    }
+
+    @GetMapping("getItemData")
+    String getItemData() {
+        logger.info("Getting inventory data.....");
+        ArrayList<Item> inventory = Library.getInventory();
+        return new Gson().toJson(inventory);
     }
 }
