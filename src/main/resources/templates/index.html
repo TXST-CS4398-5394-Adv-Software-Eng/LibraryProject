@@ -5,16 +5,36 @@
     <title>Library View</title>
 
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.0.2/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.0.2/js/bootstrap.js}"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="js/library.js" type="application/javascript" defer></script>
 
 </head>
 <body>
-    <a class="link-danger" href="https://www.google.com">Google Link</a>
     <div class="alert alert-primary" role="alert">
-        A simple primary alert—check it out!
+        LIBRARY MAIN VIEW
+    </div>
+
+    <hr/>
+    <div>
+        <table id="usersTable" class="display">
+            <thead>
+                <tr>Card ID</tr>
+                <tr>Name</tr>
+                <tr>Address</tr>
+                <tr>Phone #</tr>
+                <tr>Balance</tr>
+            </thead>
+        </table>
+    </div>
+
+    <div>
+        <table id="itemsTable" class="display">
+
+        </table>
     </div>
 </body>
 </html>

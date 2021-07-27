@@ -3,18 +3,18 @@ package edu.txstate.library.model;
 import java.util.UUID;
 
 public class LibraryCard {
-    UUID cardNumber;
+    String cardNumber;
 
     LibraryCard()
     {
-        this.cardNumber = UUID.randomUUID();
+        this.cardNumber = UUID.randomUUID().toString();
     }
 
-    public UUID getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(UUID cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 }

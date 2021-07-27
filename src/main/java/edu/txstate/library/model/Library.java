@@ -2,6 +2,8 @@ package edu.txstate.library.model;
 
 import edu.txstate.library.util.GenerateData;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -15,10 +17,13 @@ public class Library {
         listOfUsers = new ArrayList<>();
         inventory = new ArrayList<>();
 
+        // create 10 users and 10 books
         for (int i = 0; i < 10; i++) {
             listOfUsers.add(GenerateData.generateUser());
             inventory.add(GenerateData.generateBook());
         }
+
+        addPredefinedData();
     }
 
     private Library() {
@@ -50,20 +55,33 @@ public class Library {
     }
 
     /**
-     * Creates a report for a single user - the books they have checked out, their due dates,
-     * the outstanding fee they owe.
-     * @param user for whom to calculate a report
+     * userID, name, addr, phone, author, title, publisher, genre, value, bestseller
+     * if genre is AVMAT then ignore bestseller
+     *
+     * predefinedUsers.data
+     * 12 data lines - 3 users with 4 items (book or AVMAT) per person
+     * Total 30 data lines
+     *
+     * Book that is a best seller:
+     * 1, Boris, 55 Way, 555-555-5555, Carlos, Wu Tang Inc., Mythology, 10.0, true
+     *
+     * AVMaterial:
+     * 1, Boris, 55 Way, 555-555-5555, Carlos, Wu Tang Inc., AVMAT, 10.0, false
      */
-    String calculateUserItems(User user)
-    {
-        return "";
+    private static void addPredefinedData() {
+        User highBalUser = new User("Boris", "55 Way", "555-555-5555");
+        highBalUser.card.setCardNumber("1");
+
+        Book lateBook = new Book("Carlos", "Where my money at?", "Wu Tang Inc.",
+                "Mythology", 10.0f, true);
+        LocalDate pastDate = LocalDate.now(ZoneId.of("America/Chicago")).minusWeeks(3);
+        LocalDate dueDate = pastDate.plusWeeks(2);
+        lateBook.setCheckoutDate(pastDate);
+        lateBook.setDueDate(dueDate);
+        lateBook.setItemNumber("1");
+
+        listOfUsers.add(highBalUser);
+        inventory.add(lateBook);
     }
 
-    /**
-     * Creates a report for all users - the books they have checked out, their due dates,
-     * the outstanding fee they owe.
-     */
-    String calculateUserItems() {
-        return "";
-    }
 }

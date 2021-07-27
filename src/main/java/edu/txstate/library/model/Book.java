@@ -1,23 +1,13 @@
 package edu.txstate.library.model;
 
-import java.util.UUID;
-
 public class Book extends Item {
-    String author;
-    String title;
-    String publisher;
-    String genre;
     boolean isBestSeller;
 
     Book() {}
 
-    public Book(String author, String title, String publisher, String genre, boolean isBestSeller)
+    public Book(String author, String title, String publisher, String genre, float value, boolean isBestSeller)
     {
-        super();
-        this.author = author;
-        this.title = title;
-        this.publisher = publisher;
-        this.genre = genre;
+        super(author, title, publisher, genre, value);
         this.isBestSeller = isBestSeller;
     }
 }

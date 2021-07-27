@@ -58,4 +58,13 @@ public class User implements LibraryMember {
     public void queryAccount() {
 
     }
+
+    /**
+     * @author Carlos Jobe
+     * @return a float representation of a user's past due balance
+     */
+    public float calculatePastDueBalance() {
+
+        return 0.0f;
+    }
 }
