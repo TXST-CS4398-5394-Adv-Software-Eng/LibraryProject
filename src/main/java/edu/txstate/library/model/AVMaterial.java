@@ -1,4 +1,4 @@
 package edu.txstate.library.model;
 
-public class AVMaterial {
+public class AVMaterial extends Item {
 }

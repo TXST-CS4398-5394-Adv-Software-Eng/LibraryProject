@@ -1,4 +1,5 @@
 package edu.txstate.library.model;
 
-public class ReferenceBook {
+public class ReferenceBook extends Book {
+
 }

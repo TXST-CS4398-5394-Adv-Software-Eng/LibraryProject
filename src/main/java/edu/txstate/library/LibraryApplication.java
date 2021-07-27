@@ -20,6 +20,9 @@ import edu.txstate.library.model.Library;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 /**
  * @author Borislav S. Sabotinov
  */
@@ -33,7 +36,5 @@ public class LibraryApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(LibraryApplication.class, args);
-
-        Library library = new Library();
     }
 }

@@ -1,5 +1,7 @@
 package edu.txstate.library.model;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 public class User implements LibraryMember {
@@ -18,8 +20,13 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public boolean checkoutItem(Item i) {
-        return false;
+    public boolean checkoutItem(String uuid) {
+        boolean isCheckoutSuccessful = false;
+
+        LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
+
+
+        return isCheckoutSuccessful;
     }
 
     @Override
@@ -50,5 +57,14 @@ public class User implements LibraryMember {
     @Override
     public void queryAccount() {
 
+    }
+
+    /**
+     * @author Carlos Jobe
+     * @return a float representation of a user's past due balance
+     */
+    public float calculatePastDueBalance() {
+
+        return 0.0f;
     }
 }
