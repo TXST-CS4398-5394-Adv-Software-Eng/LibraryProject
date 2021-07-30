@@ -139,11 +139,10 @@ public class GenerateData {
      * @param parts String array of data needed for unmarshalling an Item
      */
     private static void processItemFromParts(String[] parts) {
-        Item item = null;
-        float value = 0.0f
-                ;
+        Item item;
+        float value = 0.0f;
         try {
-            value = Float.parseFloat(parts[7]);
+            value = Float.parseFloat(parts[8]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
