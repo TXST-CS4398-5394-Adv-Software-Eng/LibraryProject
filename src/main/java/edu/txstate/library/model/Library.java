@@ -71,4 +71,13 @@ public class Library {
         return user;
     }
 
+    /**
+     * @author Michael Brady
+     * @param user
+     * @return
+     */
+    public static ArrayList<Item> getUserItems(User user){
+        return user.getItems();
+    }
+
 }
