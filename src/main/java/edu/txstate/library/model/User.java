@@ -1,6 +1,7 @@
 package edu.txstate.library.model;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
@@ -64,8 +65,54 @@ public class User implements LibraryMember {
      * @return a float representation of a user's past due balance
      */
     public float calculatePastDueBalance() {
+        int days = 0;
+        float pastDueBalance = 0.0f;
+        float itemDue = 0.0f;
+        for(Item i : items){
+            if(i instanceof Book){
+                days = calculateBookDays((Book) i);
+            }
+            else if(i instanceof AVMaterial){
+                days = calculateAVMDays(i);
+            }
+            // shouldn't get here since can only check out books and AVMaterials
+            else{
+                days = 0;
+            }
+            itemDue = (float) (days * 0.1);
+            if(itemDue > i.value){
+                itemDue = i.value;
+            }
+            pastDueBalance = pastDueBalance + itemDue;
+        }
 
-        return 0.0f;
+        return pastDueBalance;
+    }
+
+    // helper for calculating number of days past due for Books
+    public int calculateBookDays(Book i){
+        int days = 0;
+        Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
+        if(i.isBestSeller){
+            days = (difference.getDays()-14);
+        }
+        else{
+            days = (difference.getDays()-21);
+        }
+        if(days < 0){
+            days = 0;
+        }
+        return days;
+    }
+
+    // helper for calculating number of days past due for AV Materials
+    public int calculateAVMDays(Item i){
+        Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
+        int days = (difference.getDays()-14);
+        if(days < 0){
+            days = 0;
+        }
+        return days;
     }
 
     public LibraryCard getCard() {
