@@ -7,11 +7,11 @@ jQuery(document).ready(function() {
             "dataSrc": ""
         },
         "columns": [
-            { "data": "card.cardNumber" },
-            { "data": "name" },
-            { "data": "address" },
-            { "data": "phoneNum" },
-            { "data": "balance" }
+            { data: "card.cardNumber", title: "Card ID" },
+            { data: "name", title: "Name" },
+            { data: "address", title: "Address" },
+            { data: "phoneNum", title: "Phone #" },
+            { data: "balance", title: "Balance" }
         ]
     });
 
