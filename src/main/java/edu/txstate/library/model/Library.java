@@ -20,6 +20,9 @@ public class Library {
             listOfUsers.add(GenerateData.generateUser());
             inventory.add(GenerateData.generateBook());
         }
+        addUser(GenerateData.generateSinglePredefinedUser());
+        addItem(GenerateData.generateSinglePredefinedBook());
+        GenerateData.addPredefinedData();
     }
 
     private Library() {
@@ -54,7 +57,7 @@ public class Library {
         listOfUsers.add(user);
     }
 
-    public static void addBook(Item item) {
+    public static void addItem(Item item) {
         inventory.add(item);
     }
 

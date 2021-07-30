@@ -10,4 +10,12 @@ public class Book extends Item {
         super(author, title, publisher, genre, value);
         this.isBestSeller = isBestSeller;
     }
+
+    public boolean isBestSeller() {
+        return isBestSeller;
+    }
+
+    public void setBestSeller(boolean bestSeller) {
+        isBestSeller = bestSeller;
+    }
 }
