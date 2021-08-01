@@ -14,6 +14,7 @@ public class User implements LibraryMember {
 
     public User(String name, String addr, String phone) {
         card = new LibraryCard();
+        items = new ArrayList<>();
         this.name = name;
         this.address = addr;
         this.phoneNum = phone;
@@ -114,5 +115,9 @@ public class User implements LibraryMember {
 
     public void setBalance(float balance) {
         this.balance = balance;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
     }
 }

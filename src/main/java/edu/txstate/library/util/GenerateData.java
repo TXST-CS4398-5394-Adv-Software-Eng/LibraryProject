@@ -102,10 +102,9 @@ public class GenerateData {
                 // i.e., we can have multiple copies of any one item.
                 if (Library.getUser(components[0]) == null) {
                     processUserFromParts(components);
-                } else {
-                    processItemFromParts(components);
                 }
 
+                processItemFromParts(components);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -136,24 +135,47 @@ public class GenerateData {
      * parts[8] - value as a float
      * parts[9] - isBestSeller (not used if genre is AVMAT)
      *
+     * For all books, checkout date was 4 weeks ago.
+     * Due date is then either 2 weeks ago for Audio/Visual material and best selleing books
+     * Or 1 week ago for standard books
+     *
      * @param parts String array of data needed for unmarshalling an Item
      */
     private static void processItemFromParts(String[] parts) {
         Item item;
         float value = 0.0f;
+
         try {
             value = Float.parseFloat(parts[8]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
+        LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago")).minusWeeks(4);
+        LocalDate dueDate;
+
         if (parts[7].toLowerCase().equals("avmat")) {
             item = new Item(parts[4], parts[5], parts[6], parts[7], value);
+            dueDate = checkoutDate.plusWeeks(2);
+            item.setCheckoutDate(checkoutDate);
+            item.setDueDate(dueDate);
         } else {  // a book
             boolean isBestSeller = Boolean.parseBoolean(parts[9]);
             item = new Book(parts[4], parts[5], parts[6], parts[7], value, isBestSeller);
+            if (isBestSeller) {
+                dueDate = checkoutDate.plusWeeks(2);
+            } else {
+                dueDate = checkoutDate.plusWeeks(3);
+            }
+
+            item.setCheckoutDate(checkoutDate);
+            item.setDueDate(dueDate);
         }
 
+
+
+
+        Library.getUser(parts[0]).addItem(item); // must add item to user's checked out list also
         Library.addItem(item);
     }
 }

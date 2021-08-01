@@ -2,9 +2,7 @@ jQuery(document).ready(function() {
     let usersTable, itemsTable;
 
     usersTable = $('#usersTable').DataTable({
-        select: {
-            style: 'single'
-        },
+        select: true,
         "ajax": {
             "url": "/getUserData",
             "dataSrc": ""
@@ -18,11 +16,13 @@ jQuery(document).ready(function() {
         ]
     });
 
+    $('#usersTable tbody').on( 'click', 'tr', function () {
+        console.log( usersTable.row( this ).data() );
+    } );
+
 
     itemsTable = $('#itemsTable').DataTable({
-        select: {
-            style: 'single'
-        },
+        select: true,
         "ajax": {
             "url": "/getItemData",
             "dataSrc": ""
@@ -35,5 +35,9 @@ jQuery(document).ready(function() {
             { data: "publisher", title: "Publisher" }
         ]
     });
+
+    $('#itemsTable tbody').on( 'click', 'tr', function () {
+        console.log( itemsTable.row( this ).data() );
+    } );
 
 });

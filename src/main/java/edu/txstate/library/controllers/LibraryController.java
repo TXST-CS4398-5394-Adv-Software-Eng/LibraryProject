@@ -24,6 +24,7 @@ import edu.txstate.library.model.User;
 import edu.txstate.library.util.LocalDateAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -57,5 +58,18 @@ public class LibraryController {
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
         return gson.toJson(inventory);
+    }
+
+    @GetMapping("getSingleUserData")
+    String getUserData(@RequestParam String userCardNumber) {
+        logger.info("Getting user data.....");
+        User user = Library.getUser(userCardNumber);
+        ArrayList<Item> userItems = Library.getUserItems(user);
+
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+        return gson.toJson(userItems);
     }
 }
