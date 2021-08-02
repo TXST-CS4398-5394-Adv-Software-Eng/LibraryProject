@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class User implements LibraryMember {
     private static final int TWO_WEEKS = 14;
@@ -75,9 +76,9 @@ public class User implements LibraryMember {
 
         for (Item i : items) {
             if (i instanceof Book) {
-                days = calculateBookDays((Book) i);
+                days = calculateBookLateDays((Book) i);
             } else if (i instanceof AVMaterial) {
-                days = calculateAVMDays(i);
+                days = calculateAVMLateDays(i);
             }
 
             itemFineDue = days * Item.DAILY_OVERDUE_FINE;
@@ -91,7 +92,7 @@ public class User implements LibraryMember {
     }
 
     // helper for calculating number of days past due for Books
-    public int calculateBookDays(Book i) {
+    public int calculateBookLateDays(Book i) {
         int days;
         Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
         if (i.isBestSeller) {
@@ -108,7 +109,7 @@ public class User implements LibraryMember {
     }
 
     // helper for calculating number of days past due for AV Materials
-    public int calculateAVMDays(Item i) {
+    public int calculateAVMLateDays(Item i) {
         Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
         int days = (difference.getDays() - TWO_WEEKS);
 
@@ -169,5 +170,37 @@ public class User implements LibraryMember {
 
     public void addItem(Item item) {
         items.add(item);
+    }
+
+    /**
+     * @author Boris
+     * We must guard against ConcurrentModificationException.
+     * Before finishing our iteration we are removing an element, which triggers the exception.
+     */
+    public void returnOverdueItems() {
+        int days = 0;
+
+        Iterator<Item> iter = items.iterator();
+        while(iter.hasNext()) {
+            Item i = iter.next();
+
+            if (i instanceof Book) {
+                days = calculateBookLateDays((Book) i);
+            } else if (i instanceof AVMaterial) {
+                days = calculateAVMLateDays(i);
+            }
+
+            // if days is more than zero, item is late. Return it.
+            // reset dates for the item in Library inventory and remove
+            // from user inventory
+            if (days > 0) {
+                iter.remove();
+                Item tmpItem = Library.getInventoryItem(i.getItemNumber());
+                if (tmpItem != null) {
+                    tmpItem.setDueDate(null);
+                    tmpItem.setCheckoutDate(null);
+                }
+            }
+        }
     }
 }

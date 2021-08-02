@@ -85,4 +85,19 @@ public class Library {
         return user.getItems();
     }
 
+    public static void updatePastDueBalances() {
+        for (User u : listOfUsers) {
+            u.setBalance(u.calculatePastDueBalance());
+        }
+    }
+
+    public static Item getInventoryItem(String itemNumber) {
+        for (Item i : inventory) {
+            if (i.getItemNumber().equals(itemNumber)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
 }

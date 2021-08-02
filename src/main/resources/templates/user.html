@@ -37,22 +37,53 @@
 
     <button id="loadDataBtn" class="btn-primary">Load User Data</button>
 
-    <div class="libraryTbl">
-        <h4>User's checked out items</h4>
-        <div class="border rounded">
-            <table id="userTable" class="display ">
-            </table>
+    <br/>
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Checked-Out Items</button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Inventory</button>
+        </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="libraryTbl">
+                <h4>User's Inventory</h4>
+                <div class="border rounded">
+                    <table id="userTable" class="display ">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div >
+                <h4>Library Inventory</h4>
+                <div class="libraryTbl border rounded">
+                    <table id="itemsTable" class="display" style="width: 100% !important">
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div>User balance: </div>
-    <div id="userBalance"></div>
+    <br/>
 
-    <p>Select an item above to return, then click "Return" below. </p>
+    <div id="userBalance">User balance: </div>
+
+    <p>Select an item from the "User's Inventory" above to return, then click "Return" below. </p>
     <div>
-        <button id="returnItemBtn" class="btn-primary">Return</button>
+        <button id="returnItemBtn" class="btn-primary" style="margin: 5px;">Return</button>
+
+        <button id="payBalanceBtn" class="btn-primary" style="margin: 5px;">Pay Balance</button>
     </div>
 
-    <button id="payBalanceBtn" class="btn-primary">Pay Balance</button>
+    <footer class="py-4 bg-dark flex-shrink-0">
+        <div class="container text-center">
+            <a href="https://www.txstate.edu/" class="text-white-50">&copy; Texas State University</a>
+        </div>
+    </footer>
 </body>
 </html>

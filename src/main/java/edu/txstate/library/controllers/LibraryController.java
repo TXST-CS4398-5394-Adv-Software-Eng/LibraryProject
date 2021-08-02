@@ -76,7 +76,20 @@ public class LibraryController {
     @GetMapping("payBalance")
     String payUserBalance(@RequestParam String userCardNumber) {
         logger.info("Paying balance for " + userCardNumber);
-        Library.getUser(userCardNumber).setBalance(0.0f);
+        User user = Library.getUser(userCardNumber);
+        user.setBalance(0.0f);
+        user.returnOverdueItems();
         return "OK";
+    }
+
+    @GetMapping("updateBalances")
+    String updateBalances() {
+        Library.updatePastDueBalances();
+        return "OK";
+    }
+
+    @GetMapping("getUserBalance")
+    String getUserBalance(@RequestParam String userCardNumber) {
+        return "" + Library.getUser(userCardNumber).calculatePastDueBalance();
     }
 }

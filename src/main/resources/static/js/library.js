@@ -38,6 +38,11 @@ jQuery(document).ready(function() {
 
     $('#itemsTable tbody').on( 'click', 'tr', function () {
         console.log( itemsTable.row( this ).data() );
-    } );
+    });
 
+    $('#updateBalanceBtn').click( function () {
+        $.get("/updateBalances", function (data) {
+           console.log(data);
+        });
+    });
 });
