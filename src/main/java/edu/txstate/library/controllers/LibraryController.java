@@ -42,14 +42,14 @@ public class LibraryController {
         return "CS4398/5394 Library App says hello!" + message + "!";
     }
 
-    @GetMapping("getUserData")
+    @GetMapping("/getUserData")
     String getUserData() {
         logger.info("Getting user data.....");
         ArrayList<User> users = Library.getListOfUsers();
         return new Gson().toJson(users);
     }
 
-    @GetMapping("getItemData")
+    @GetMapping("/getItemData")
     String getItemData() {
         logger.info("Getting inventory data.....");
         ArrayList<Item> inventory = Library.getInventory();
@@ -60,7 +60,7 @@ public class LibraryController {
         return gson.toJson(inventory);
     }
 
-    @GetMapping("getSingleUserData")
+    @GetMapping("/getSingleUserData")
     String getUserData(@RequestParam String userCardNumber) {
         logger.info("Getting user data.....");
         User user = Library.getUser(userCardNumber);
@@ -73,7 +73,7 @@ public class LibraryController {
         return gson.toJson(userItems);
     }
 
-    @GetMapping("payBalance")
+    @GetMapping("/payBalance")
     String payUserBalance(@RequestParam String userCardNumber) {
         logger.info("Paying balance for " + userCardNumber);
         User user = Library.getUser(userCardNumber);
@@ -82,24 +82,24 @@ public class LibraryController {
         return "OK";
     }
 
-    @GetMapping("updateBalances")
+    @GetMapping("/updateBalances")
     String updateBalances() {
         Library.updatePastDueBalances();
         return "OK";
     }
 
-    @GetMapping("getUserBalance")
+    @GetMapping("/getUserBalance")
     String getUserBalance(@RequestParam String userCardNumber) {
         return "" + Library.getUser(userCardNumber).calculatePastDueBalance();
     }
 
-    @GetMapping("returnItem")
+    @GetMapping("/returnItem")
     String returnItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
         Library.getUser(userCardNumber).returnItem(itemNumber);
         return "OK";
     }
 
-    @GetMapping("checkoutItem")
+    @GetMapping("/checkoutItem")
     String checkoutItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
         boolean isCheckoutSuccessful = Library.getUser(userCardNumber).checkoutItem(itemNumber);
         if (isCheckoutSuccessful) {
