@@ -10,6 +10,8 @@ import edu.txstate.library.model.User;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Random;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
  */
 public class GenerateData {
     private final static Logger logger = Logger.getLogger(LibraryController.class.getName());
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private final static Faker FAKER = new Faker();
     private final static String DATA_FILE_NAME = "data.csv";
 
@@ -47,9 +50,12 @@ public class GenerateData {
         final int MAX_VAL = 20;
         final int MIN_VAL = 1;
         Random random = new Random();
+        decimalFormat.setRoundingMode(RoundingMode.UP);
+        Float randValue = (random.nextFloat() * (MAX_VAL - MIN_VAL));
+        String formattedFloat = decimalFormat.format(randValue);
 
         return new Book(FAKER.book().author(), FAKER.book().title(), FAKER.book().publisher(),
-                FAKER.book().genre(), random.nextFloat() * (MAX_VAL - MIN_VAL), random.nextBoolean());
+                FAKER.book().genre(), Float.parseFloat(formattedFloat), random.nextBoolean());
     }
 
     /**

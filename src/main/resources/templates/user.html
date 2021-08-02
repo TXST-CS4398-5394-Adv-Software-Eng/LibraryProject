@@ -38,6 +38,8 @@
     <button id="loadDataBtn" class="btn-primary">Load User Data</button>
 
     <br/>
+    <br/>
+    <br/>
 
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -56,29 +58,34 @@
                     <table id="userTable" class="display ">
                     </table>
                 </div>
+                <br/>
+                <div id="userBalance">User balance: </div>
+
+                <p>Select an item from the "User's Inventory" above to return, then click "Return" below. </p>
+                <div>
+                    <button id="returnItemBtn" class="btn-primary" style="margin: 5px;">Return</button>
+                    <button id="renewItemBtn" class="btn-primary" style="margin: 5px;">Renew</button>
+                    <button id="payBalanceBtn" class="btn-primary" style="margin: 5px;">Pay Balance</button>
+                    <button id="refreshUsrDataBtn" class="btn-primary" style="margin: 5px;">Refresh</button>
+                </div>
             </div>
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-            <div >
+            <div class="libraryTbl">
                 <h4>Library Inventory</h4>
-                <div class="libraryTbl border rounded">
+                <div class="border rounded">
                     <table id="itemsTable" class="display" style="width: 100% !important">
                     </table>
                 </div>
+                <br/>
+                <button id="checkoutItemBtn" class="btn-primary">Check Out</button>
+                <button id="reserveItemBtn" class="btn-primary">Reserve</button>
+                <button id="refreshLibDataBtn" class="btn-primary">Refresh</button>
             </div>
         </div>
     </div>
 
     <br/>
-
-    <div id="userBalance">User balance: </div>
-
-    <p>Select an item from the "User's Inventory" above to return, then click "Return" below. </p>
-    <div>
-        <button id="returnItemBtn" class="btn-primary" style="margin: 5px;">Return</button>
-
-        <button id="payBalanceBtn" class="btn-primary" style="margin: 5px;">Pay Balance</button>
-    </div>
 
     <footer class="py-4 bg-dark flex-shrink-0">
         <div class="container text-center">

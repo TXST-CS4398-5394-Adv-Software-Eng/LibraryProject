@@ -5,6 +5,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class User implements LibraryMember {
     private static final int TWO_WEEKS = 14;
@@ -26,18 +27,43 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public boolean checkoutItem(String uuid) {
+    public boolean checkoutItem(String itemNumber) {
         boolean isCheckoutSuccessful = false;
-
+        Item item = Library.getInventoryItem(itemNumber);
         LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
+        LocalDate dueDate;
 
+        if (Objects.requireNonNull(item).getCheckoutDate() == null) {
+            if (item instanceof AVMaterial) {
+                AVMaterial avMaterial = (AVMaterial) item;
+                dueDate = checkoutDate.plusDays(TWO_WEEKS);
+
+                avMaterial.setCheckoutDate(checkoutDate);
+                avMaterial.setDueDate(dueDate);
+                this.addItem(avMaterial);
+                isCheckoutSuccessful = true;
+            } else if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.isBestSeller()) {
+                    dueDate = checkoutDate.plusDays(TWO_WEEKS);
+                } else {
+                    dueDate = checkoutDate.plusDays(THREE_WEEKS);
+                }
+                book.setCheckoutDate(checkoutDate);
+                book.setDueDate(dueDate);
+                this.addItem(book);
+                isCheckoutSuccessful = true;
+            }
+        }
 
         return isCheckoutSuccessful;
     }
 
     @Override
-    public void returnItem(Item i) {
-
+    public void returnItem(String itemNumber) {
+        items.removeIf(i -> i.getItemNumber().equals(itemNumber));
+        Objects.requireNonNull(Library.getInventoryItem(itemNumber)).setCheckoutDate(null);
+        Objects.requireNonNull(Library.getInventoryItem(itemNumber)).setDueDate(null);
     }
 
     @Override

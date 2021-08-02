@@ -32,7 +32,10 @@ jQuery(document).ready(function() {
             { data: "author", title: "Author" },
             { data: "title", title: "Title" },
             { data: "genre", title: "Genre" },
-            { data: "publisher", title: "Publisher" }
+            { data: "publisher", title: "Publisher" },
+            { data: "value", title: "Value ($)" },
+            { data: "checkoutDate", title: "Checkout Date" },
+            { data: "dueDate", title: "Due Date" },
         ]
     });
 
