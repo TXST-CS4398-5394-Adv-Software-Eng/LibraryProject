@@ -72,4 +72,11 @@ public class LibraryController {
                 .create();
         return gson.toJson(userItems);
     }
+
+    @GetMapping("payBalance")
+    String payUserBalance(@RequestParam String userCardNumber) {
+        logger.info("Paying balance for " + userCardNumber);
+        Library.getUser(userCardNumber).setBalance(0.0f);
+        return "OK";
+    }
 }

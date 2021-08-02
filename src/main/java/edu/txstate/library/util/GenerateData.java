@@ -172,9 +172,6 @@ public class GenerateData {
             item.setDueDate(dueDate);
         }
 
-
-
-
         Library.getUser(parts[0]).addItem(item); // must add item to user's checked out list also
         Library.addItem(item);
     }

@@ -25,6 +25,14 @@ jQuery(document).ready(function() {
 
     $('#itemsTable tbody').on( 'click', 'tr', function () {
         console.log( itemsTable.row( this ).data() );
-    } );
+    });
+
+    $('#payBalanceBtn').click(function () {
+        uid = $('#userId').val();
+        console.log("uid: " + uid);
+        $.get("/payBalance?userCardNumber=" + uid, function (data) {
+            alert("Balance paid for user with card # " + uid);
+        });
+    });
 
 });
