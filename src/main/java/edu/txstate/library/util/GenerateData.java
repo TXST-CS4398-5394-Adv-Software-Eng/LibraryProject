@@ -119,11 +119,20 @@ public class GenerateData {
      * parts[1] - Name
      * parts[2] - Addr
      * parts[3] - Phone
+     * parts[10] - isChild
      *
      * @param parts String array of data needed for unmarshalling a User
      */
     private static void processUserFromParts(String[] parts) {
-        User user = new User(parts[1], parts[2], parts[3]);
+        boolean isChild = Boolean.parseBoolean(parts[10]);
+        User user;
+
+        if (isChild) {
+            user = new Child(parts[1], parts[2], parts[3]);
+        } else {
+            user = new User(parts[1], parts[2], parts[3]);
+        }
+
         user.getCard().setCardNumber(parts[0]);
         Library.addUser(user);
     }
