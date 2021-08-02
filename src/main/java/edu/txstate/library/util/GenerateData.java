@@ -2,10 +2,7 @@ package edu.txstate.library.util;
 
 import com.github.javafaker.Faker;
 import edu.txstate.library.controllers.LibraryController;
-import edu.txstate.library.model.Book;
-import edu.txstate.library.model.Item;
-import edu.txstate.library.model.Library;
-import edu.txstate.library.model.User;
+import edu.txstate.library.model.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -161,7 +158,7 @@ public class GenerateData {
         LocalDate dueDate;
 
         if (parts[7].toLowerCase().equals("avmat")) {
-            item = new Item(parts[4], parts[5], parts[6], parts[7], value);
+            item = new AVMaterial(parts[4], parts[5], parts[6], parts[7], value);
             dueDate = checkoutDate.plusWeeks(2);
             item.setCheckoutDate(checkoutDate);
             item.setDueDate(dueDate);
