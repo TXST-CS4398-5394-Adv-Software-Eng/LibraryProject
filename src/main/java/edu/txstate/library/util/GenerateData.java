@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class GenerateData {
     private final static Logger logger = Logger.getLogger(LibraryController.class.getName());
     private final static Faker FAKER = new Faker();
-    private final static String DATA_FILE_NAME = "data.txt";
+    private final static String DATA_FILE_NAME = "data.csv";
 
     private GenerateData() {
     } // prevent creation of instances
@@ -139,11 +139,10 @@ public class GenerateData {
      * @param parts String array of data needed for unmarshalling an Item
      */
     private static void processItemFromParts(String[] parts) {
-        Item item = null;
-        float value = 0.0f
-                ;
+        Item item;
+        float value = 0.0f;
         try {
-            value = Float.parseFloat(parts[7]);
+            value = Float.parseFloat(parts[8]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
