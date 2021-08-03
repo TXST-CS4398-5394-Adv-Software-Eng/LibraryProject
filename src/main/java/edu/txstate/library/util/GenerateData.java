@@ -22,6 +22,7 @@ public class GenerateData {
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private final static Faker FAKER = new Faker();
     private final static String DATA_FILE_NAME = "data.csv";
+    private final static String ITEMS_FILE_NAME = "itemsData.csv";
 
     private GenerateData() {
     } // prevent creation of instances
@@ -71,6 +72,7 @@ public class GenerateData {
      */
     public static void addPredefinedData() {
         processDataFile();
+        processItemDataFile();
     }
 
     public static User generateSinglePredefinedUser() {
@@ -155,13 +157,7 @@ public class GenerateData {
      */
     private static void processItemFromParts(String[] parts) {
         Item item;
-        float value = 0.0f;
-
-        try {
-            value = Float.parseFloat(parts[8]);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        float value = getFloatValue(parts[8]);
 
         LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago")).minusWeeks(4);
         LocalDate dueDate;
@@ -186,5 +182,41 @@ public class GenerateData {
 
         Library.getUser(parts[0]).addItem(item); // must add item to user's checked out list also
         Library.addItem(item);
+    }
+
+    private static void processItemDataFile() {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        GenerateData.class.getResourceAsStream("/" + ITEMS_FILE_NAME)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logger.info("Processing items data line: " + line);
+                String[] parts = line.split(",");
+
+                Item item;
+                float value = getFloatValue(parts[4]);
+
+                if (parts[3].toLowerCase().equals("magz")) {
+                    item = new Magazine(parts[0], parts[1], parts[2], parts[3], value);
+                } else {  // a reference book
+                    item = new ReferenceBook(parts[0], parts[1], parts[2], parts[3], value, false);
+                }
+
+                Library.addItem(item);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static float getFloatValue(String val) {
+        float value = 0.0f;
+
+        try {
+            value = Float.parseFloat(val);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 }
