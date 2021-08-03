@@ -92,4 +92,11 @@ jQuery(document).ready(function() {
         loadItemsTbl();
     });
 
+    $('#renewItemBtn').click(function () {
+        console.log("Renewing item.");
+        $.get("/renewItem?itemNumber=" + userItem.itemNumber + "&userCardNumber=" + uid, function (data) {
+           alert("Item #" + userItem.itemNumber + " renewed status: " + data);
+        });
+    });
+
 });

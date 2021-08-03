@@ -14,6 +14,8 @@ public class Item {
     String genre;
     float value;
 
+    boolean isRenewed;
+
     LocalDate checkoutDate;
     LocalDate dueDate;
 
@@ -30,6 +32,7 @@ public class Item {
         this.value = value;
         checkoutDate = null;
         dueDate = null;
+        isRenewed = false;
     }
 
     public LocalDate getCheckoutDate() {
@@ -54,5 +57,13 @@ public class Item {
 
     public void setItemNumber(String itemNumber) {
         this.itemNumber = itemNumber;
+    }
+
+    public boolean isRenewed() {
+        return isRenewed;
+    }
+
+    public void setRenewed(boolean renewed) {
+        isRenewed = renewed;
     }
 }

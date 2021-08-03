@@ -37,6 +37,7 @@ public class User implements LibraryMember {
 
         if (Objects.requireNonNull(item).getCheckoutDate() == null) {
             if (item instanceof AVMaterial) {
+                logger.info("Checking out AV Material....");
                 AVMaterial avMaterial = (AVMaterial) item;
                 dueDate = checkoutDate.plusDays(TWO_WEEKS);
 
@@ -44,11 +45,13 @@ public class User implements LibraryMember {
                 avMaterial.setDueDate(dueDate);
                 this.addItem(avMaterial);
                 checkoutCondition = "Checked out AVMAT OK.";
-            } else if (item instanceof Book) {
+            } else if (item instanceof Book && !(item instanceof ReferenceBook)) {
                 Book book = (Book) item;
                 if (book.isBestSeller()) {
+                    logger.info("Checking out best selling book.....");
                     dueDate = checkoutDate.plusDays(TWO_WEEKS);
                 } else {
+                    logger.info("Checking out standard book.....");
                     dueDate = checkoutDate.plusDays(THREE_WEEKS);
                 }
                 book.setCheckoutDate(checkoutDate);
@@ -78,8 +81,32 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public boolean renewItem(Item i) {
-        return false;
+    public boolean renewItem(String itemNumber) {
+        boolean isRenewed = false;
+
+        Item item = Library.getInventoryItem(itemNumber);
+        if (!Objects.requireNonNull(item).isRenewed()) {
+            LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
+            item.setCheckoutDate(checkoutDate);
+
+            if (item instanceof AVMaterial) {
+                item.setDueDate(checkoutDate.plusDays(TWO_WEEKS));
+                isRenewed = true;
+                item.setRenewed(true);
+            } else if (item instanceof Book) {
+                if (((Book) item).isBestSeller()) {
+                    item.setDueDate(checkoutDate.plusDays(TWO_WEEKS));
+                    isRenewed = true;
+                    item.setRenewed(true);
+                } else {
+                    item.setDueDate(checkoutDate.plusDays(THREE_WEEKS));
+                    isRenewed = true;
+                    item.setRenewed(true);
+                }
+            }
+        }
+
+        return isRenewed;
     }
 
     @Override

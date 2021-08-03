@@ -103,4 +103,11 @@ public class LibraryController {
     String checkoutItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
         return Library.getUser(userCardNumber).checkoutItem(itemNumber);
     }
+
+    @GetMapping("/renewItem")
+    String renewItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        logger.info("Renewing item.....");
+        boolean isRenewed = Library.getUser(userCardNumber).renewItem(itemNumber);
+        return Boolean.toString(isRenewed);
+    }
 }
