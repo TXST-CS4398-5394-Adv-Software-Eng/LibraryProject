@@ -86,4 +86,20 @@ public class Item {
     public void setRequestingUserId(String requestingUserId) {
         this.requestingUserId = requestingUserId;
     }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 }

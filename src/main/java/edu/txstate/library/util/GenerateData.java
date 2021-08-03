@@ -162,13 +162,14 @@ public class GenerateData {
         LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago")).minusWeeks(4);
         LocalDate dueDate;
 
-        if (parts[7].toLowerCase().equals("avmat")) {
+        if (parts[7].trim().toLowerCase().equals("avmat")) {
+            logger.info("Creating new AV Material item!");
             item = new AVMaterial(parts[4], parts[5], parts[6], parts[7], value);
             dueDate = checkoutDate.plusWeeks(2);
             item.setCheckoutDate(checkoutDate);
             item.setDueDate(dueDate);
         } else {  // a book
-            boolean isBestSeller = Boolean.parseBoolean(parts[9]);
+            boolean isBestSeller = Boolean.parseBoolean(parts[9].trim());
             item = new Book(parts[4], parts[5], parts[6], parts[7], value, isBestSeller);
             if (isBestSeller) {
                 dueDate = checkoutDate.plusWeeks(2);
@@ -196,7 +197,7 @@ public class GenerateData {
                 Item item;
                 float value = getFloatValue(parts[4]);
 
-                if (parts[3].toLowerCase().equals("magz")) {
+                if (parts[3].trim().toLowerCase().equals("magz")) {
                     item = new Magazine(parts[0], parts[1], parts[2], parts[3], value);
                 } else {  // a reference book
                     item = new ReferenceBook(parts[0], parts[1], parts[2], parts[3], value, false);

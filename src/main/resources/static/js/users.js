@@ -23,15 +23,18 @@ jQuery(document).ready(function() {
             ]
         });
 
-        $('#loadDataBtn').attr("disabled", true).css('cursor', 'not-allowed');
-
         $.get("/getUserBalance?userCardNumber=" + uid, function (data) {
             console.log("User " + uid + " has a balance of " + data);
             $('#userBalance').html("User balance: $" + data);
         });
     }
 
-    $('#loadDataBtn').click(loadUserTbl);
+    $('#loadDataBtn').click(function () {
+        if(userTable) {
+            userTable.destroy();
+        }
+        loadUserTbl();
+    });
 
     $('#payBalanceBtn').click(function () {
         uid = $('#userId').val();
@@ -39,6 +42,7 @@ jQuery(document).ready(function() {
         $.get("/payBalance?userCardNumber=" + uid, function (data) {
             alert("Balance paid " + data + " for user # " + uid);
         });
+        refreshAll();
     });
 
     let loadItemsTbl = function() {
@@ -64,11 +68,13 @@ jQuery(document).ready(function() {
 
     $('#itemsTable tbody').on( 'click', 'tr', function () {
         libraryItem = itemsTable.row( this ).data()
+        console.log(libraryItem);
         console.log(libraryItem.itemNumber + " selected by user #" + uid + " for checkout");
     });
 
     $('#userTable').on( 'click', 'tr', function () {
         userItem = userTable.row( this ).data();
+        console.log(userItem);
         console.log(userItem.itemNumber + " selected for user #" + uid);
     });
 
@@ -76,12 +82,18 @@ jQuery(document).ready(function() {
        $.get("returnItem?itemNumber=" + userItem.itemNumber + "&userCardNumber=" + uid, function (data) {
            alert("Item #" + userItem.itemNumber + " return status: " + data);
        });
+        refreshAll();
     });
 
     $('#checkoutItemBtn').click(function () {
-        $.get("checkoutItem?itemNumber=" + libraryItem.itemNumber + "&userCardNumber=" + uid, function (data) {
-           alert("User #" + uid + " checked out item #" + libraryItem.itemNumber + ". Status: " + data);
-        });
+        if ((libraryItem.isRequested && libraryItem.requestingUserId == uid) || !(libraryItem.isRequested)) {
+            $.get("checkoutItem?itemNumber=" + libraryItem.itemNumber + "&userCardNumber=" + uid, function (data) {
+                alert("User #" + uid + " checked out item #" + libraryItem.itemNumber + ". Status: " + data);
+            });
+            refreshAll();
+        } else {
+            alert("Someone else got here first suckaaa!");
+        }
     });
 
     $('#refreshUsrDataBtn').click(function () {
@@ -91,14 +103,26 @@ jQuery(document).ready(function() {
 
     $('#refreshLibDataBtn').click(function () {
        itemsTable.destroy();
-        loadItemsTbl();
+       loadItemsTbl();
     });
+
+    let refreshAll = function () {
+        userTable.destroy();
+        loadUserTbl();
+        itemsTable.destroy();
+        loadItemsTbl();
+    }
 
     $('#renewItemBtn').click(function () {
         console.log("Renewing item.");
-        $.get("/renewItem?itemNumber=" + userItem.itemNumber + "&userCardNumber=" + uid, function (data) {
-           alert("Item #" + userItem.itemNumber + " renewed status: " + data);
-        });
+        if (userItem.isRequested) {
+            alert("Someone has requested this item; cannot renew. Please return it!");
+        } else {
+            $.get("/renewItem?itemNumber=" + userItem.itemNumber + "&userCardNumber=" + uid, function (data) {
+                alert("Item #" + userItem.itemNumber + " renewed status: " + data);
+            });
+            refreshAll();
+        }
     });
 
     $('#requestItemBtn').click(function () {
@@ -106,6 +130,7 @@ jQuery(document).ready(function() {
        $.get("/requestItem?itemNumber=" + libraryItem.itemNumber + "&userCardNumber=" + uid, function (data) {
           alert("Item #" + libraryItem.itemNumber + " request status: " + data);
        });
+        refreshAll();
     });
 
 });

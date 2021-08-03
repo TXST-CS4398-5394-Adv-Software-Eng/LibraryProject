@@ -32,6 +32,10 @@ To view the available API endpoints and details about them:
 Ensure the project is running.    
 Navigate to: http://localhost:8080/swagger-ui.html
 
+## Class Diagram
+
+![](src/main/resources/static/img/LibraryUML.png)
+
 ##Guides
 The following guides illustrate how to use some features concretely:
 
