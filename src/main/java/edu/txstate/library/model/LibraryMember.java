@@ -1,11 +1,9 @@
 package edu.txstate.library.model;
 
 public interface LibraryMember {
-    boolean checkoutItem(String uuid);
-    void returnItem(Item i);
-    void requestItem(Item i);
-    boolean renewItem(Item i);
-    void payFine(float balance);
-    Item searchItem(String s);
-    void queryAccount();
+    String checkoutItem(String itemNumber);
+    void returnItem(String itemNumber);
+    boolean requestItem(String itemNumber);
+    boolean renewItem(String itemNumber);
+    void payFine();
 }

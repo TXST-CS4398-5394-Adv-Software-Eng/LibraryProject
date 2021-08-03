@@ -4,8 +4,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class User implements LibraryMember {
+    private static final Logger logger = Logger.getLogger(User.class.getName());
     private static final int TWO_WEEKS = 14;
     private static final int THREE_WEEKS = 21;
 
@@ -18,49 +22,108 @@ public class User implements LibraryMember {
 
     public User(String name, String addr, String phone) {
         card = new LibraryCard();
+        items = new ArrayList<>();
         this.name = name;
         this.address = addr;
         this.phoneNum = phone;
     }
 
     @Override
-    public boolean checkoutItem(String uuid) {
-        boolean isCheckoutSuccessful = false;
-
+    public String checkoutItem(String itemNumber) {
+        String checkoutCondition = "";
+        Item item = Library.getInventoryItem(itemNumber);
         LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
+        LocalDate dueDate;
 
+        if (Objects.requireNonNull(item).getCheckoutDate() == null) {
+            if (item instanceof AVMaterial) {
+                logger.info("Checking out AV Material....");
+                AVMaterial avMaterial = (AVMaterial) item;
+                dueDate = checkoutDate.plusDays(TWO_WEEKS);
 
-        return isCheckoutSuccessful;
+                avMaterial.setCheckoutDate(checkoutDate);
+                avMaterial.setDueDate(dueDate);
+                this.addItem(avMaterial);
+                checkoutCondition = "Checked out AVMAT OK.";
+            } else if (item instanceof Book && !(item instanceof ReferenceBook)) {
+                Book book = (Book) item;
+                if (book.isBestSeller()) {
+                    logger.info("Checking out best selling book.....");
+                    dueDate = checkoutDate.plusDays(TWO_WEEKS);
+                } else {
+                    logger.info("Checking out standard book.....");
+                    dueDate = checkoutDate.plusDays(THREE_WEEKS);
+                }
+                book.setCheckoutDate(checkoutDate);
+                book.setDueDate(dueDate);
+                this.addItem(book);
+                checkoutCondition = "Checked out Book OK.";
+            } else {
+                checkoutCondition = "Cannot check out; not a Book or AVMAT!";
+            }
+        } else {
+            checkoutCondition = "Cannot check out; item already checked out!";
+        }
+
+        return checkoutCondition;
     }
 
     @Override
-    public void returnItem(Item i) {
-
+    public void returnItem(String itemNumber) {
+        items.removeIf(i -> i.getItemNumber().equals(itemNumber));
+        Objects.requireNonNull(Library.getInventoryItem(itemNumber)).setCheckoutDate(null);
+        Objects.requireNonNull(Library.getInventoryItem(itemNumber)).setDueDate(null);
     }
 
     @Override
-    public void requestItem(Item i) {
+    public boolean requestItem(String itemNumber) {
+        boolean isRequested = false;
 
+        Item item = Library.getInventoryItem(itemNumber);
+
+        if (!Objects.requireNonNull(item).isRequested()) {
+            Objects.requireNonNull(item).setRequested(true);
+            Objects.requireNonNull(item).setRequestingUserId(this.getCard().getCardNumber());
+            isRequested = true;
+        } else {
+            logger.warning("Item is already requested, try again later!");
+        }
+
+        return isRequested;
     }
 
     @Override
-    public boolean renewItem(Item i) {
-        return false;
+    public boolean renewItem(String itemNumber) {
+        boolean isRenewed = false;
+
+        Item item = Library.getInventoryItem(itemNumber);
+        if (!Objects.requireNonNull(item).isRenewed()) {
+            LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
+            item.setCheckoutDate(checkoutDate);
+
+            if (item instanceof AVMaterial) {
+                item.setDueDate(checkoutDate.plusDays(TWO_WEEKS));
+                isRenewed = true;
+                item.setRenewed(true);
+            } else if (item instanceof Book) {
+                if (((Book) item).isBestSeller()) {
+                    item.setDueDate(checkoutDate.plusDays(TWO_WEEKS));
+                    isRenewed = true;
+                    item.setRenewed(true);
+                } else {
+                    item.setDueDate(checkoutDate.plusDays(THREE_WEEKS));
+                    isRenewed = true;
+                    item.setRenewed(true);
+                }
+            }
+        }
+
+        return isRenewed;
     }
 
     @Override
-    public void payFine(float balance) {
-
-    }
-
-    @Override
-    public Item searchItem(String s) {
-        return null;
-    }
-
-    @Override
-    public void queryAccount() {
-
+    public void payFine() {
+        logger.info("User #" + getCard().getCardNumber() + " paid past due balance for returned book.");
     }
 
     /**
@@ -74,9 +137,9 @@ public class User implements LibraryMember {
 
         for (Item i : items) {
             if (i instanceof Book) {
-                days = calculateBookDays((Book) i);
+                days = calculateBookLateDays((Book) i);
             } else if (i instanceof AVMaterial) {
-                days = calculateAVMDays(i);
+                days = calculateAVMLateDays(i);
             }
 
             itemFineDue = days * Item.DAILY_OVERDUE_FINE;
@@ -90,7 +153,7 @@ public class User implements LibraryMember {
     }
 
     // helper for calculating number of days past due for Books
-    public int calculateBookDays(Book i) {
+    public int calculateBookLateDays(Book i) {
         int days;
         Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
         if (i.isBestSeller) {
@@ -107,7 +170,7 @@ public class User implements LibraryMember {
     }
 
     // helper for calculating number of days past due for AV Materials
-    public int calculateAVMDays(Item i) {
+    public int calculateAVMLateDays(Item i) {
         Period difference = Period.between(i.checkoutDate, LocalDate.now(ZoneId.of("America/Chicago")));
         int days = (difference.getDays() - TWO_WEEKS);
 
@@ -164,5 +227,41 @@ public class User implements LibraryMember {
 
     public void setBalance(float balance) {
         this.balance = balance;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    /**
+     * @author Boris
+     * We must guard against ConcurrentModificationException.
+     * Before finishing our iteration we are removing an element, which triggers the exception.
+     */
+    public void returnOverdueItems() {
+        int days = 0;
+
+        Iterator<Item> iter = items.iterator();
+        while(iter.hasNext()) {
+            Item i = iter.next();
+
+            if (i instanceof Book) {
+                days = calculateBookLateDays((Book) i);
+            } else if (i instanceof AVMaterial) {
+                days = calculateAVMLateDays(i);
+            }
+
+            // if days is more than zero, item is late. Return it.
+            // reset dates for the item in Library inventory and remove
+            // from user inventory
+            if (days > 0) {
+                iter.remove();
+                Item tmpItem = Library.getInventoryItem(i.getItemNumber());
+                if (tmpItem != null) {
+                    tmpItem.setDueDate(null);
+                    tmpItem.setCheckoutDate(null);
+                }
+            }
+        }
     }
 }

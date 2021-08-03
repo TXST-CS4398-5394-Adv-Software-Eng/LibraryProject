@@ -2,14 +2,13 @@ package edu.txstate.library.util;
 
 import com.github.javafaker.Faker;
 import edu.txstate.library.controllers.LibraryController;
-import edu.txstate.library.model.Book;
-import edu.txstate.library.model.Item;
-import edu.txstate.library.model.Library;
-import edu.txstate.library.model.User;
+import edu.txstate.library.model.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Random;
@@ -20,8 +19,10 @@ import java.util.logging.Logger;
  */
 public class GenerateData {
     private final static Logger logger = Logger.getLogger(LibraryController.class.getName());
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private final static Faker FAKER = new Faker();
     private final static String DATA_FILE_NAME = "data.csv";
+    private final static String ITEMS_FILE_NAME = "itemsData.csv";
 
     private GenerateData() {
     } // prevent creation of instances
@@ -47,9 +48,12 @@ public class GenerateData {
         final int MAX_VAL = 20;
         final int MIN_VAL = 1;
         Random random = new Random();
+        decimalFormat.setRoundingMode(RoundingMode.UP);
+        Float randValue = (random.nextFloat() * (MAX_VAL - MIN_VAL));
+        String formattedFloat = decimalFormat.format(randValue);
 
         return new Book(FAKER.book().author(), FAKER.book().title(), FAKER.book().publisher(),
-                FAKER.book().genre(), random.nextFloat() * (MAX_VAL - MIN_VAL), random.nextBoolean());
+                FAKER.book().genre(), Float.parseFloat(formattedFloat), random.nextBoolean());
     }
 
     /**
@@ -68,6 +72,7 @@ public class GenerateData {
      */
     public static void addPredefinedData() {
         processDataFile();
+        processItemDataFile();
     }
 
     public static User generateSinglePredefinedUser() {
@@ -102,10 +107,9 @@ public class GenerateData {
                 // i.e., we can have multiple copies of any one item.
                 if (Library.getUser(components[0]) == null) {
                     processUserFromParts(components);
-                } else {
-                    processItemFromParts(components);
                 }
 
+                processItemFromParts(components);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,11 +121,20 @@ public class GenerateData {
      * parts[1] - Name
      * parts[2] - Addr
      * parts[3] - Phone
+     * parts[10] - isChild
      *
      * @param parts String array of data needed for unmarshalling a User
      */
     private static void processUserFromParts(String[] parts) {
-        User user = new User(parts[1], parts[2], parts[3]);
+        boolean isChild = Boolean.parseBoolean(parts[10]);
+        User user;
+
+        if (isChild) {
+            user = new Child(parts[1], parts[2], parts[3]);
+        } else {
+            user = new User(parts[1], parts[2], parts[3]);
+        }
+
         user.getCard().setCardNumber(parts[0]);
         Library.addUser(user);
     }
@@ -136,24 +149,75 @@ public class GenerateData {
      * parts[8] - value as a float
      * parts[9] - isBestSeller (not used if genre is AVMAT)
      *
+     * For all books, checkout date was 4 weeks ago.
+     * Due date is then either 2 weeks ago for Audio/Visual material and best selleing books
+     * Or 1 week ago for standard books
+     *
      * @param parts String array of data needed for unmarshalling an Item
      */
     private static void processItemFromParts(String[] parts) {
         Item item;
+        float value = getFloatValue(parts[8]);
+
+        LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago")).minusWeeks(4);
+        LocalDate dueDate;
+
+        if (parts[7].trim().toLowerCase().equals("avmat")) {
+            logger.info("Creating new AV Material item!");
+            item = new AVMaterial(parts[4], parts[5], parts[6], parts[7], value);
+            dueDate = checkoutDate.plusWeeks(2);
+            item.setCheckoutDate(checkoutDate);
+            item.setDueDate(dueDate);
+        } else {  // a book
+            boolean isBestSeller = Boolean.parseBoolean(parts[9].trim());
+            item = new Book(parts[4], parts[5], parts[6], parts[7], value, isBestSeller);
+            if (isBestSeller) {
+                dueDate = checkoutDate.plusWeeks(2);
+            } else {
+                dueDate = checkoutDate.plusWeeks(3);
+            }
+
+            item.setCheckoutDate(checkoutDate);
+            item.setDueDate(dueDate);
+        }
+
+        Library.getUser(parts[0]).addItem(item); // must add item to user's checked out list also
+        Library.addItem(item);
+    }
+
+    private static void processItemDataFile() {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        GenerateData.class.getResourceAsStream("/" + ITEMS_FILE_NAME)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logger.info("Processing items data line: " + line);
+                String[] parts = line.split(",");
+
+                Item item;
+                float value = getFloatValue(parts[4]);
+
+                if (parts[3].trim().toLowerCase().equals("magz")) {
+                    item = new Magazine(parts[0], parts[1], parts[2], parts[3], value);
+                } else {  // a reference book
+                    item = new ReferenceBook(parts[0], parts[1], parts[2], parts[3], value, false);
+                }
+
+                Library.addItem(item);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static float getFloatValue(String val) {
         float value = 0.0f;
+
         try {
-            value = Float.parseFloat(parts[8]);
+            value = Float.parseFloat(val);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
-        if (parts[7].toLowerCase().equals("avmat")) {
-            item = new Item(parts[4], parts[5], parts[6], parts[7], value);
-        } else {  // a book
-            boolean isBestSeller = Boolean.parseBoolean(parts[9]);
-            item = new Book(parts[4], parts[5], parts[6], parts[7], value, isBestSeller);
-        }
-
-        Library.addItem(item);
+        return value;
     }
 }

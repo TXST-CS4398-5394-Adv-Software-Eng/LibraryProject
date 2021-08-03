@@ -36,4 +36,12 @@ class GenerateDataTest {
         // TODO: call the generateBook method and capture it in an Item object, not a Book obj
         //  test that item is instanceof Book for test case to pass
     }
+
+    /**
+     * @author
+     */
+    @Test
+    void getFloatValue_obtainFloat() {
+
+    }
 }

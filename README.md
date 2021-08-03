@@ -32,6 +32,10 @@ To view the available API endpoints and details about them:
 Ensure the project is running.    
 Navigate to: http://localhost:8080/swagger-ui.html
 
+## Class Diagram
+
+![](src/main/resources/static/img/LibraryUML.png)
+
 ##Guides
 The following guides illustrate how to use some features concretely:
 
@@ -39,6 +43,12 @@ The following guides illustrate how to use some features concretely:
 [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)    
 [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)    
 
+## Notes
+
+`Unable to make private java.lang.module.Configuration() accessible: module java.base does not "opens java.lang.module" to unnamed module`
+This exception occurs if you do not make the Logger object private static and final.  
+
 ##References
 
 https://stackoverflow.com/questions/39192945/serialize-java-8-localdate-as-yyyy-mm-dd-with-gson
+

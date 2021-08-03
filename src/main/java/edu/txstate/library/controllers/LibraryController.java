@@ -24,6 +24,7 @@ import edu.txstate.library.model.User;
 import edu.txstate.library.util.LocalDateAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -41,14 +42,14 @@ public class LibraryController {
         return "CS4398/5394 Library App says hello!" + message + "!";
     }
 
-    @GetMapping("getUserData")
+    @GetMapping("/getUserData")
     String getUserData() {
         logger.info("Getting user data.....");
         ArrayList<User> users = Library.getListOfUsers();
         return new Gson().toJson(users);
     }
 
-    @GetMapping("getItemData")
+    @GetMapping("/getItemData")
     String getItemData() {
         logger.info("Getting inventory data.....");
         ArrayList<Item> inventory = Library.getInventory();
@@ -57,5 +58,63 @@ public class LibraryController {
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
         return gson.toJson(inventory);
+    }
+
+    @GetMapping("/getSingleUserData")
+    String getUserData(@RequestParam String userCardNumber) {
+        logger.info("Getting user data.....");
+        User user = Library.getUser(userCardNumber);
+        ArrayList<Item> userItems = Library.getUserItems(user);
+
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+        return gson.toJson(userItems);
+    }
+
+    @GetMapping("/payBalance")
+    String payUserBalance(@RequestParam String userCardNumber) {
+        logger.info("Paying balance for " + userCardNumber);
+        User user = Library.getUser(userCardNumber);
+        user.setBalance(0.0f);
+        user.returnOverdueItems();
+        return "OK";
+    }
+
+    @GetMapping("/updateBalances")
+    String updateBalances() {
+        Library.updatePastDueBalances();
+        return "OK";
+    }
+
+    @GetMapping("/getUserBalance")
+    String getUserBalance(@RequestParam String userCardNumber) {
+        return "" + Library.getUser(userCardNumber).calculatePastDueBalance();
+    }
+
+    @GetMapping("/returnItem")
+    String returnItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        Library.getUser(userCardNumber).returnItem(itemNumber);
+        return "OK";
+    }
+
+    @GetMapping("/checkoutItem")
+    String checkoutItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        return Library.getUser(userCardNumber).checkoutItem(itemNumber);
+    }
+
+    @GetMapping("/renewItem")
+    String renewItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        logger.info("Renewing item.....");
+        boolean isRenewed = Library.getUser(userCardNumber).renewItem(itemNumber);
+        return Boolean.toString(isRenewed);
+    }
+
+    @GetMapping("/requestItem")
+    String requestItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        logger.info("Requesting item....");
+        boolean isRequested = Library.getUser(userCardNumber).requestItem(itemNumber);
+        return Boolean.toString(isRequested);
     }
 }

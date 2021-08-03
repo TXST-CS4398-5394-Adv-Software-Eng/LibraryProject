@@ -1,12 +1,15 @@
 package edu.txstate.library.model;
 
+import edu.txstate.library.controllers.LibraryController;
 import edu.txstate.library.util.GenerateData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class Library {
+    Logger logger = Logger.getLogger(Library.class.getName());
     private static ArrayList<User> listOfUsers;
     private static ArrayList<Item> inventory;
     private static HashMap<UUID, ArrayList<Item>> itemRequests;
@@ -20,6 +23,7 @@ public class Library {
             listOfUsers.add(GenerateData.generateUser());
             inventory.add(GenerateData.generateBook());
         }
+
         addUser(GenerateData.generateSinglePredefinedUser());
         addItem(GenerateData.generateSinglePredefinedBook());
         GenerateData.addPredefinedData();
@@ -66,6 +70,7 @@ public class Library {
         for (User u : listOfUsers) {
             if (u.getCard().getCardNumber().equals(cardNum)) {
                 user = u;
+                break;
             }
         }
         return user;
@@ -78,6 +83,21 @@ public class Library {
      */
     public static ArrayList<Item> getUserItems(User user){
         return user.getItems();
+    }
+
+    public static void updatePastDueBalances() {
+        for (User u : listOfUsers) {
+            u.setBalance(u.calculatePastDueBalance());
+        }
+    }
+
+    public static Item getInventoryItem(String itemNumber) {
+        for (Item i : inventory) {
+            if (i.getItemNumber().equals(itemNumber)) {
+                return i;
+            }
+        }
+        return null;
     }
 
 }
