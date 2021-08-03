@@ -1,7 +1,7 @@
 package edu.txstate.library.model;
 
 public class Book extends Item {
-    boolean isBestSeller;
+     boolean isBestSeller;
 
     Book() {}
 
