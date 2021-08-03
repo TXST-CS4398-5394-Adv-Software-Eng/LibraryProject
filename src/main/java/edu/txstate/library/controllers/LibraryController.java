@@ -110,4 +110,11 @@ public class LibraryController {
         boolean isRenewed = Library.getUser(userCardNumber).renewItem(itemNumber);
         return Boolean.toString(isRenewed);
     }
+
+    @GetMapping("/requestItem")
+    String requestItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
+        logger.info("Requesting item....");
+        boolean isRequested = Library.getUser(userCardNumber).requestItem(itemNumber);
+        return Boolean.toString(isRequested);
+    }
 }

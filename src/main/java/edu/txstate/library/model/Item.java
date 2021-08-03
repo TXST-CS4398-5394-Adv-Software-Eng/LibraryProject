@@ -15,6 +15,8 @@ public class Item {
     float value;
 
     boolean isRenewed;
+    boolean isRequested;
+    String requestingUserId;
 
     LocalDate checkoutDate;
     LocalDate dueDate;
@@ -30,9 +32,11 @@ public class Item {
         this.publisher = publisher;
         this.genre = genre;
         this.value = value;
-        checkoutDate = null;
-        dueDate = null;
-        isRenewed = false;
+        this.checkoutDate = null;
+        this.dueDate = null;
+        this.isRenewed = false;
+        this.isRequested = false;
+        this.requestingUserId = "";
     }
 
     public LocalDate getCheckoutDate() {
@@ -65,5 +69,21 @@ public class Item {
 
     public void setRenewed(boolean renewed) {
         isRenewed = renewed;
+    }
+
+    public boolean isRequested() {
+        return isRequested;
+    }
+
+    public void setRequested(boolean requested) {
+        isRequested = requested;
+    }
+
+    public String getRequestingUserId() {
+        return requestingUserId;
+    }
+
+    public void setRequestingUserId(String requestingUserId) {
+        this.requestingUserId = requestingUserId;
     }
 }

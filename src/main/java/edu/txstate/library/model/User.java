@@ -76,8 +76,20 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public void requestItem(Item i) {
+    public boolean requestItem(String itemNumber) {
+        boolean isRequested = false;
 
+        Item item = Library.getInventoryItem(itemNumber);
+
+        if (!Objects.requireNonNull(item).isRequested()) {
+            Objects.requireNonNull(item).setRequested(true);
+            Objects.requireNonNull(item).setRequestingUserId(this.getCard().getCardNumber());
+            isRequested = true;
+        } else {
+            logger.warning("Item is already requested, try again later!");
+        }
+
+        return isRequested;
     }
 
     @Override

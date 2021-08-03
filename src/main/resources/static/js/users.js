@@ -23,6 +23,8 @@ jQuery(document).ready(function() {
             ]
         });
 
+        $('#loadDataBtn').attr("disabled", true).css('cursor', 'not-allowed');
+
         $.get("/getUserBalance?userCardNumber=" + uid, function (data) {
             console.log("User " + uid + " has a balance of " + data);
             $('#userBalance').html("User balance: $" + data);
@@ -97,6 +99,13 @@ jQuery(document).ready(function() {
         $.get("/renewItem?itemNumber=" + userItem.itemNumber + "&userCardNumber=" + uid, function (data) {
            alert("Item #" + userItem.itemNumber + " renewed status: " + data);
         });
+    });
+
+    $('#requestItemBtn').click(function () {
+       console.log("Requesting item.");
+       $.get("/requestItem?itemNumber=" + libraryItem.itemNumber + "&userCardNumber=" + uid, function (data) {
+          alert("Item #" + libraryItem.itemNumber + " request status: " + data);
+       });
     });
 
 });
