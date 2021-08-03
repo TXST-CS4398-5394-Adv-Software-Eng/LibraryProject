@@ -8,11 +8,11 @@ public class Child extends  User {
     }
 
     @Override
-    public boolean checkoutItem(String itemNumber) {
+    public String checkoutItem(String itemNumber) {
         if (this.items.size() < ITEM_LIMIT) {
             return super.checkoutItem(itemNumber);
+        } else {
+            return "User is child; limit of " + ITEM_LIMIT + " items reached!";
         }
-
-        return false;
     }
 }

@@ -101,11 +101,6 @@ public class LibraryController {
 
     @GetMapping("/checkoutItem")
     String checkoutItem(@RequestParam String itemNumber, @RequestParam String userCardNumber) {
-        boolean isCheckoutSuccessful = Library.getUser(userCardNumber).checkoutItem(itemNumber);
-        if (isCheckoutSuccessful) {
-            return "OK";
-        } else {
-            return "Unable to check out item, already loaned!";
-        }
+        return Library.getUser(userCardNumber).checkoutItem(itemNumber);
     }
 }

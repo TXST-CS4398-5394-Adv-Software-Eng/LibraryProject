@@ -6,8 +6,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class User implements LibraryMember {
+    private static final Logger logger = Logger.getLogger(User.class.getName());
     private static final int TWO_WEEKS = 14;
     private static final int THREE_WEEKS = 21;
 
@@ -27,8 +29,8 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public boolean checkoutItem(String itemNumber) {
-        boolean isCheckoutSuccessful = false;
+    public String checkoutItem(String itemNumber) {
+        String checkoutCondition = "";
         Item item = Library.getInventoryItem(itemNumber);
         LocalDate checkoutDate = LocalDate.now(ZoneId.of("America/Chicago"));
         LocalDate dueDate;
@@ -41,7 +43,7 @@ public class User implements LibraryMember {
                 avMaterial.setCheckoutDate(checkoutDate);
                 avMaterial.setDueDate(dueDate);
                 this.addItem(avMaterial);
-                isCheckoutSuccessful = true;
+                checkoutCondition = "Checked out AVMAT OK.";
             } else if (item instanceof Book) {
                 Book book = (Book) item;
                 if (book.isBestSeller()) {
@@ -52,11 +54,15 @@ public class User implements LibraryMember {
                 book.setCheckoutDate(checkoutDate);
                 book.setDueDate(dueDate);
                 this.addItem(book);
-                isCheckoutSuccessful = true;
+                checkoutCondition = "Checked out Book OK.";
+            } else {
+                checkoutCondition = "Cannot check out; not a Book or AVMAT!";
             }
+        } else {
+            checkoutCondition = "Cannot check out; item already checked out!";
         }
 
-        return isCheckoutSuccessful;
+        return checkoutCondition;
     }
 
     @Override
@@ -77,18 +83,8 @@ public class User implements LibraryMember {
     }
 
     @Override
-    public void payFine(float balance) {
-
-    }
-
-    @Override
-    public Item searchItem(String s) {
-        return null;
-    }
-
-    @Override
-    public void queryAccount() {
-
+    public void payFine() {
+        logger.info("User #" + getCard().getCardNumber() + " paid past due balance for returned book.");
     }
 
     /**
