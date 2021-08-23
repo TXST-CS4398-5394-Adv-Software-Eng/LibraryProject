@@ -43,6 +43,8 @@ public class User implements LibraryMember {
 
                 avMaterial.setCheckoutDate(checkoutDate);
                 avMaterial.setDueDate(dueDate);
+                avMaterial.setRequested(false);
+                avMaterial.setRequestingUserId("");
                 this.addItem(avMaterial);
                 checkoutCondition = "Checked out AVMAT OK.";
             } else if (item instanceof Book && !(item instanceof ReferenceBook)) {
@@ -56,6 +58,8 @@ public class User implements LibraryMember {
                 }
                 book.setCheckoutDate(checkoutDate);
                 book.setDueDate(dueDate);
+                book.setRequested(false);
+                book.setRequestingUserId("");
                 this.addItem(book);
                 checkoutCondition = "Checked out Book OK.";
             } else {

@@ -1,18 +1,14 @@
 package edu.txstate.library.model;
 
-import edu.txstate.library.controllers.LibraryController;
 import edu.txstate.library.util.GenerateData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Library {
     Logger logger = Logger.getLogger(Library.class.getName());
     private static ArrayList<User> listOfUsers;
     private static ArrayList<Item> inventory;
-    private static HashMap<UUID, ArrayList<Item>> itemRequests;
 
     static {
         listOfUsers = new ArrayList<>();
@@ -47,14 +43,6 @@ public class Library {
 
     public static void setInventory(ArrayList<Item> libraryItems) {
         inventory = libraryItems;
-    }
-
-    public static HashMap<UUID, ArrayList<Item>> getItemRequests() {
-        return itemRequests;
-    }
-
-    public static void setItemRequests(HashMap<UUID, ArrayList<Item>> itemsRequested) {
-        itemRequests = itemsRequested;
     }
 
     public static void addUser(User user) {
