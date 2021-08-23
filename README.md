@@ -26,11 +26,19 @@ After building the app
 
 You should see "CS4398/5394 Library App says hello!World!"
 
-#Viewing the API
+## Viewing the API
 To view the available API endpoints and details about them:
 
 Ensure the project is running.    
 Navigate to: http://localhost:8080/swagger-ui.html
+
+## Deploy the service to GCP
+
+Build Docker image: `gcloud builds submit --tag gcr.io/library-321820/library`   
+Deploy the image: `gcloud beta run deploy --image gcr.io/library-321820/library`    
+  - Select [1] Cloud Run (fully managed) for the target platform
+  - Select [22] us-central1 for the region
+  - Press Enter to select the default for service name (movies)
 
 ## Class Diagram
 
